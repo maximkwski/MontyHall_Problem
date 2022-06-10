@@ -1,0 +1,59 @@
+DEFINE Doors USING prize ENDDIFINE 
+
+DEFINE Game USING:
+    1. doors = [] "empy by default" 
+    2. won -> true/ false "games won"
+    3. doorPicked "Random number from 0 to 2"
+
+    SEQUENCE createDoors 
+        ADD door.prize -> "Goat"
+        ADD door.prize -> "Goat"
+        ADD door.prize -> "Car"
+    ENDSEQUENCE
+   "doors = [Goat, Goat< Car] "
+
+    SEQUENCE finalChoice (changed) "TRUE/FALSE"
+        IF (changed is TRUE) THAN 
+            IF (doorPicked.prize === "Goat") THAN Game.won -> true;
+            ELSE (doorPicked.prize === "Car") THAN Game.won ->false;
+        ELSE (not changed) THAN
+            IF (doorPicked.prize === "Goat") THAN Game.won -> false;
+            ELSE (doorPicked.prize === "Car") THAN Game Game.won ->true;
+    ENDSEQUENCE       
+ENDDIFINE
+
+DEFINE Statistics USING:
+    gamesWithSameDoorWon = [];
+    gamesWithSameDoorLost = [];
+    gamesWithDoorChangeWon = [];
+    gamesWithDoorChangeLost = [];
+
+    SEQUENCE playStats USING:
+        1. FOR LOOP "KEEP Same Door": SET counter to 1;
+                    BREAK when counter reaches 500;
+                    INCREMENT number by 1;
+                CREATE game();
+                CREATE finalChoice(changed) -> FALSE "NOT CHANGED";
+                IF (game.won) -> TRUE THEN
+                    ADD game to gamesWithSameDoorWon;
+                ELSE (game.won) -> FALSE THEN
+                    ADD game to gamesWithSameDoorLost;
+        2. FOR LOOP "Change Door": SET counter to 1;
+                    BREAK when counter reaches 500;
+                    INCREMENT number by 1;
+                CREATE game();
+                CREATE finalChoice(changed) -> True "CHANGED";
+                IF (game.won) -> TRUE THEN
+                    ADD game to gamesWithDoorChangeWon;
+                ELSE (game.won) -> FALSE THEN
+                    ADD game to gamesWithDoorChangeLost;
+    ENDSEQUENCE
+ENDDIFINE 
+          
+CREATE gameStatistics from Statistics;
+GET playStats from gameStatistics;
+
+PRINT "Number of games won when door is changed "USING:
+       gamesWithDoorChangeWon.lengh / 500 games * 100 "to get in %"
+PRINT "Number of games won when door is not changed" USING:
+        gamesWithSameDoorWon.length / 500 games * 100 "to get in %"
