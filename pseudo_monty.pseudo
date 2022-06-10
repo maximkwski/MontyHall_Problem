@@ -1,7 +1,7 @@
 DEFINE Doors USING prize ENDDIFINE 
 
 DEFINE Game USING:
-    1. doors = [] "empy by default" 
+    1. SET doors to empty ARRAY "empy by default" 
     2. won -> true/ false "games won"
     3. doorPicked "Random number from 0 to 2"
 
@@ -14,19 +14,19 @@ DEFINE Game USING:
 
     SEQUENCE finalChoice (changed) "TRUE/FALSE"
         IF (changed is TRUE) THAN 
-            IF (doorPicked.prize === "Goat") THAN Game.won -> true;
-            ELSE (doorPicked.prize === "Car") THAN Game.won ->false;
+            IF (doorPicked.prize is EQUAL to "Goat") THAN Game.won -> true;
+            ELSE (doorPicked.prize is EQUAL to"Car") THAN Game.won ->false;
         ELSE (not changed) THAN
-            IF (doorPicked.prize === "Goat") THAN Game.won -> false;
-            ELSE (doorPicked.prize === "Car") THAN Game Game.won ->true;
+            IF (doorPicked.prize is EQUAL to "Goat") THAN Game.won -> false;
+            ELSE (doorPicked.prize is EQUAL to "Car") THAN Game Game.won ->true;
     ENDSEQUENCE       
 ENDDIFINE
 
 DEFINE Statistics USING:
-    gamesWithSameDoorWon = [];
-    gamesWithSameDoorLost = [];
-    gamesWithDoorChangeWon = [];
-    gamesWithDoorChangeLost = [];
+    SET gamesWithSameDoorWon to EMPTY LIST;
+    SET gamesWithSameDoorLost to EMPTY LIST;
+    gamesWithDoorChangeWon to EMPTY LIST;
+    gamesWithDoorChangeLost to EMPTY LIST;
 
     SEQUENCE playStats USING:
         1. FOR LOOP "KEEP Same Door": SET counter to 1;
@@ -34,7 +34,7 @@ DEFINE Statistics USING:
                     INCREMENT number by 1;
                 CREATE game();
                 CREATE finalChoice(changed) -> FALSE "NOT CHANGED";
-                IF (game.won) -> TRUE THEN
+                IF (game.won) is TRUE THEN
                     ADD game to gamesWithSameDoorWon;
                 ELSE (game.won) -> FALSE THEN
                     ADD game to gamesWithSameDoorLost;
